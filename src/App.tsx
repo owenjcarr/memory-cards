@@ -4,12 +4,15 @@ import Board from './components/Board';
 import * as _ from "lodash"
 
 function App() {
-  // const [level, setLevel] = useState(1);
+
+  const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
 
   const [characters, setCharacters] = useState([]);
   const [clicked, setClicked] = useState<string[]>([]);
+
+  const [maxScore, setMaxScore] = useState(3);
 
   const getCharacters = async (num: number): Promise<void> => {
     const numArray = Array.from({length: num}, (_, i) => i + 1);
@@ -33,11 +36,34 @@ function App() {
   // componentDidMount
   useEffect(() => {
     const loadCards = async () => {
-      setCharacters(shuffleCharacters(await getCharacters(5)));
+      setCharacters(shuffleCharacters(await getCharacters(3)));
     };
 
     loadCards();
   },[]);
+
+  // componentDidUpdate
+  useEffect(() => {
+    console.log(maxScore)
+    if (score > bestScore) {
+      setBestScore(score);
+    }
+    if(score === maxScore) {
+      setLevel(level + 1);
+    }
+  }, [score]);
+
+  // componentDidUpdate
+  useEffect(() => {
+    if (level !== 1) {
+      const nextLevel = async () => {
+        setClicked([]);
+        setMaxScore(maxScore + level * 2);
+        setCharacters(shuffleCharacters(await getCharacters(level * 2)));
+      };
+      nextLevel();
+    }
+  }, [level]);
 
   const incrementScore = ():void => {
     setScore(score + 1);
@@ -47,14 +73,9 @@ function App() {
     setScore(0);
     setCharacters(shuffleCharacters(characters));
     setClicked([]);
+    setLevel(1)
+    setMaxScore(3);
   }
-
-  // componentDidUpdate
-  useEffect(() => {
-    if (score > bestScore) {
-      setBestScore(score);
-    }
-  }, [bestScore, score]);
 
   const handleChoice = (e:string) => {
     if(clicked.includes(e)) {
@@ -71,11 +92,11 @@ function App() {
   return (
     <div>
       <Header
-        level={1}
+        level={level}
         score={score}
         bestScore={bestScore}
       />
-      <Board characters={characters} onClick={handleChoice}/>
+      <Board key={level} characters={characters} onClick={handleChoice}/>
     </div>
   );
 }

@@ -18,7 +18,7 @@ function Board({characters, onClick}: Props) {
   );
 
   return (
-    <div>{cards}</div>
+    <div className="board">{cards}</div>
   );
 }
 
