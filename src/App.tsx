@@ -55,13 +55,16 @@ function App() {
 
   // componentDidUpdate
   useEffect(() => {
-    if (level !== 1) {
-      const nextLevel = async () => {
-        setClicked([]);
-        setMaxScore(maxScore + level * 2);
-        setCharacters(shuffleCharacters(await getCharacters(level * 2)));
-      };
-      nextLevel();
+    const nextLevel = async (chars: number) => {
+      setCharacters(shuffleCharacters(await getCharacters(chars)));
+    };
+
+    if (level === 1) {
+      nextLevel(3);
+    } else  {
+      setClicked([]);
+      setMaxScore(maxScore + level * 2);
+      nextLevel(level*3);
     }
   }, [level]);
 
