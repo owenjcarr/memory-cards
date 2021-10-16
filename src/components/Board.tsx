@@ -1,18 +1,24 @@
-import React from "react"
+import React from "react" 
 import Card from "./Card"
 
-type Props = {
-  characters: { id: number, img: string, name: string}[],
-  onClick: any
+interface Cards {
+  id: number;
+  src: string;
+  name: string;
 }
 
-function Board({characters, onClick}: Props) {
+type Props = {
+  characters: Cards[],
+  onClick: (clicked: string) => void
+}
+
+function Board({characters, onClick}: Props){
   
   const cards = characters.map(char => 
     <Card 
       key={char.id}
       name={char.name}
-      img={char.img}
+      src={char.src}
       onClick={onClick}
     />
   );

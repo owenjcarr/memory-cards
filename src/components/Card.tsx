@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-
 type Props = {
   name: string;
-  img: string;
-  onClick: any;
+  src: string;
+  onClick: (clicked: string) => void;
 }
 
-function Card({ name, img, onClick }: Props) {
+function Card({ name, src, onClick }: Props): JSX.Element {
 
   const handleClick = (e:any) => {
     onClick(name);
@@ -14,7 +12,7 @@ function Card({ name, img, onClick }: Props) {
 
   return (
     <div onClick={handleClick}>
-      <img src={img} alt="cat"></img>
+      <img src={src} alt={`${name}-img`}></img>
       <p>{name}</p>
     </div>
   );

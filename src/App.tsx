@@ -3,18 +3,24 @@ import Header from './components/Header';
 import Board from './components/Board';
 import * as _ from "lodash"
 
-function App() {
+interface CharInfo {
+  id: number;
+  name: string;
+  src: string;
+}
+
+function App(): JSX.Element {
 
   const [level, setLevel] = useState(1);
   const [currentScore, setCurrentScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
 
-  const [characters, setCharacters] = useState([]);
+  const [characters, setCharacters] = useState<CharInfo[]>([]);
   const [clicked, setClicked] = useState<string[]>([]);
 
   const [maxScore, setMaxScore] = useState(3);
 
-  const getCharacters = async (num: number): Promise<[{id: number, name: string, img: string}]> => {
+  const getCharacters = async (num: number): Promise<CharInfo[]> => {
     const numArray = Array.from({length: num}, (_, i) => i + 1);
     const data = await fetch(`https://rickandmortyapi.com/api/character/${numArray}`)
     const charList = await data.json();
@@ -22,7 +28,7 @@ function App() {
       return {
         id: char.id,
         name: char.name,
-        img: char.image
+        src: char.image
       };
     });
     return characters;
@@ -33,7 +39,6 @@ function App() {
     return shuffledChars;
   }
 
-  // componentDidMount
   useEffect(() => {
     const loadCards = async () => {
       setCharacters(shuffleCharacters(await getCharacters(3)));
@@ -42,7 +47,6 @@ function App() {
     loadCards();
   },[]);
 
-  // componentDidUpdate
   useEffect(() => {
     if (currentScore > bestScore) {
       setBestScore(currentScore);
@@ -52,7 +56,6 @@ function App() {
     }
   }, [currentScore]);
 
-  // componentDidUpdate
   useEffect(() => {
     const nextLevel = async (chars: number) => {
       setCharacters(shuffleCharacters(await getCharacters(chars)));
@@ -98,7 +101,7 @@ function App() {
         score={currentScore}
         bestScore={bestScore}
       />
-      <Board key={level} characters={characters} onClick={handleChoice}/>
+      <Board  characters={characters} onClick={handleChoice}/>
     </div>
   );
 }

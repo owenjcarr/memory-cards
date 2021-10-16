@@ -1,13 +1,11 @@
-import React from "react";
-
 type Props = {
-  level: number,
-  score: number,
-  bestScore: number
+  level: number;
+  score: number;
+  bestScore: number;
 }
 
-function Header({level, score, bestScore}: Props) {
-  return(
+function Header({level, score, bestScore}: Props): JSX.Element {
+  return( 
     <header>
       <h1>Memory Game</h1>
       <p>Level: {level}</p>
@@ -16,4 +14,5 @@ function Header({level, score, bestScore}: Props) {
     </header>
   );
 }
+
 export default Header;
