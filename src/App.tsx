@@ -6,7 +6,7 @@ import * as _ from "lodash"
 function App() {
 
   const [level, setLevel] = useState(1);
-  const [score, setScore] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
 
   const [characters, setCharacters] = useState([]);
@@ -14,7 +14,7 @@ function App() {
 
   const [maxScore, setMaxScore] = useState(3);
 
-  const getCharacters = async (num: number): Promise<void> => {
+  const getCharacters = async (num: number): Promise<[{id: number, name: string, img: string}]> => {
     const numArray = Array.from({length: num}, (_, i) => i + 1);
     const data = await fetch(`https://rickandmortyapi.com/api/character/${numArray}`)
     const charList = await data.json();
@@ -44,14 +44,13 @@ function App() {
 
   // componentDidUpdate
   useEffect(() => {
-    console.log(maxScore)
-    if (score > bestScore) {
-      setBestScore(score);
+    if (currentScore > bestScore) {
+      setBestScore(currentScore);
     }
-    if(score === maxScore) {
+    if(currentScore === maxScore) {
       setLevel(level + 1);
     }
-  }, [score]);
+  }, [currentScore]);
 
   // componentDidUpdate
   useEffect(() => {
@@ -63,24 +62,24 @@ function App() {
       nextLevel(3);
     } else  {
       setClicked([]);
-      setMaxScore(maxScore + level * 2);
-      nextLevel(level*3);
+      nextLevel(level * 3);
+      setMaxScore(maxScore + level * 3);
     }
   }, [level]);
 
-  const incrementScore = ():void => {
-    setScore(score + 1);
+  const incrementScore = (): void => {
+    setCurrentScore(currentScore + 1);
   }
 
-  const reset = ():void => {
-    setScore(0);
+  const reset = (): void => {
+    setCurrentScore(0);
     setCharacters(shuffleCharacters(characters));
     setClicked([]);
     setLevel(1)
     setMaxScore(3);
   }
 
-  const handleChoice = (e:string) => {
+  const handleChoice = (e:string): void => {
     if(clicked.includes(e)) {
       reset();
     }
@@ -96,7 +95,7 @@ function App() {
     <div>
       <Header
         level={level}
-        score={score}
+        score={currentScore}
         bestScore={bestScore}
       />
       <Board key={level} characters={characters} onClick={handleChoice}/>
