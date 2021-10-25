@@ -8,9 +8,11 @@ function Header({level, score, bestScore}: Props): JSX.Element {
   return( 
     <header>
       <h1>Memory Game</h1>
-      <p>Level: {level}</p>
-      <p>Current: {score}</p>
-      <p>Best Score: {bestScore}</p>
+      <div className="score-board">
+        <p>Level: {level}</p>
+        <p>Current Score: {score}</p>
+        <p>Best Score: {bestScore}</p>
+      </div>
     </header>
   );
 }

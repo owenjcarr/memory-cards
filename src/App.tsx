@@ -34,8 +34,8 @@ function App(): JSX.Element {
     return characters;
   };
 
-  const shuffleCharacters = (characters: any) => {
-    const shuffledChars: any = _.shuffle(characters)
+  const shuffleCharacters = (characters: CharInfo[]) => {
+    const shuffledChars: CharInfo[] = _.shuffle(characters)
     return shuffledChars;
   }
 

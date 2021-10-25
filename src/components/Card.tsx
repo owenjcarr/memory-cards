@@ -11,7 +11,7 @@ function Card({ name, src, onClick }: Props): JSX.Element {
   }
 
   return (
-    <div onClick={handleClick}>
+    <div className="card" onClick={handleClick}>
       <img src={src} alt={`${name}-img`}></img>
       <p>{name}</p>
     </div>
