@@ -13,7 +13,9 @@ type Props = {
 }
 
 function Board({characters, onClick}: Props){
-  
+
+  console.log(characters);
+
   const cards = characters.map(char => 
     <Card 
       key={char.id}

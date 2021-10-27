@@ -11,14 +11,16 @@ interface CharInfo {
 
 function App(): JSX.Element {
 
+  const STARTING_CHARS = 2;
+
   const [level, setLevel] = useState(1);
   const [currentScore, setCurrentScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
-
+  const [maxScore, setMaxScore] = useState(STARTING_CHARS);
   const [characters, setCharacters] = useState<CharInfo[]>([]);
+  const [activeCharacters, setActiveCharacters] = useState<CharInfo[]>([]);
   const [clicked, setClicked] = useState<string[]>([]);
-
-  const [maxScore, setMaxScore] = useState(3);
+  
 
   const getCharacters = async (num: number): Promise<CharInfo[]> => {
     const numArray = Array.from({length: num}, (_, i) => i + 1);
@@ -41,10 +43,16 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const loadCards = async () => {
-      setCharacters(shuffleCharacters(await getCharacters(3)));
+      try {
+        let chars = await getCharacters(10);
+        setCharacters(chars);
+        setActiveCharacters(shuffleCharacters(chars).splice(0,STARTING_CHARS));
+      } catch (e) {
+        alert(e);
+      } 
     };
-
     loadCards();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   useEffect(() => {
@@ -52,22 +60,20 @@ function App(): JSX.Element {
       setBestScore(currentScore);
     }
     if(currentScore === maxScore) {
-      setLevel(level + 1);
+      setLevel(prevLevel => prevLevel + 1);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScore]);
 
   useEffect(() => {
-    const nextLevel = async (chars: number) => {
-      setCharacters(shuffleCharacters(await getCharacters(chars)));
-    };
-
     if (level === 1) {
-      nextLevel(3);
+      setActiveCharacters(shuffleCharacters(characters).splice(0,STARTING_CHARS));
     } else  {
       setClicked([]);
-      nextLevel(level * 3);
-      setMaxScore(maxScore + level * 3);
+      setActiveCharacters(shuffleCharacters(characters).splice(0, level * 2));
+      setMaxScore(prevMaxScore => prevMaxScore + level * 2);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [level]);
 
   const incrementScore = (): void => {
@@ -76,10 +82,10 @@ function App(): JSX.Element {
 
   const reset = (): void => {
     setCurrentScore(0);
-    setCharacters(shuffleCharacters(characters));
+    setActiveCharacters(shuffleCharacters(characters).splice(0,STARTING_CHARS));
     setClicked([]);
     setLevel(1)
-    setMaxScore(3);
+    setMaxScore(STARTING_CHARS);
   }
 
   const handleChoice = (e:string): void => {
@@ -89,10 +95,9 @@ function App(): JSX.Element {
     else {
       setClicked(prevState => clicked.concat(e));
       incrementScore();
-      setCharacters(shuffleCharacters(characters));
+      setActiveCharacters(prevChars => shuffleCharacters(prevChars));
     }
   }
-
 
   return (
     <div>
@@ -101,7 +106,10 @@ function App(): JSX.Element {
         score={currentScore}
         bestScore={bestScore}
       />
-      <Board  characters={characters} onClick={handleChoice}/>
+      <Board  
+        characters={activeCharacters} 
+        onClick={handleChoice}
+      />
     </div>
   );
 }
