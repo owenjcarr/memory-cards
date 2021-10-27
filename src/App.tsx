@@ -52,12 +52,17 @@ function App(): JSX.Element {
       } 
     };
     loadCards();
+    if(localStorage.getItem("bestScore")) {
+      const highScore = JSON.parse(localStorage.getItem("bestScore") || "");
+      setBestScore(highScore);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   useEffect(() => {
     if (currentScore > bestScore) {
       setBestScore(currentScore);
+      localStorage.setItem("bestScore", JSON.stringify(currentScore));
     }
     if(currentScore === maxScore) {
       setLevel(prevLevel => prevLevel + 1);
@@ -77,7 +82,7 @@ function App(): JSX.Element {
   }, [level]);
 
   const incrementScore = (): void => {
-    setCurrentScore(currentScore + 1);
+    setCurrentScore(prevCurrentScore => prevCurrentScore + 1);
   }
 
   const reset = (): void => {
